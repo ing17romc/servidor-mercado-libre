@@ -1,5 +1,6 @@
 
 const axios = require('axios');
+const { getCondition, formatterCurrency } = require('../utils/utils.js');
 const filter_category = process.env.FILTER_CATEGORY;
 const api_ml_search = process.env.API_MERCADO_LIBRE_SEARCH;
 const api_ml_product_detail = process.env.API_MERCADO_LIBRE_PRODUCT_DETAIL;
@@ -30,7 +31,7 @@ service.searchProduct = async (q) => {
                 price: {
                     currency: element.currency_id,
                     amount: element.available_quantity,
-                    decimals: formatterPeso.format(element.price),
+                    decimals: formatterCurrency.format(element.price),
                 },
                 picture: element.thumbnail,
                 condition: getCondition(element.condition),
@@ -87,7 +88,7 @@ service.productDetail = async (id) => {
                 price: {
                     currency: data.currency_id,
                     amount: data.available_quantity,
-                    decimals: formatterPeso.format(data.price),
+                    decimals: formatterCurrency.format(data.price),
                 },
                 picture: data.pictures[0].url,
                 condition: getCondition(data.condition),
@@ -97,6 +98,7 @@ service.productDetail = async (id) => {
             },
         };
     } catch (e) {
+        console.log(e)
         if (e.response) {
             throw e;
         } else {
@@ -112,22 +114,5 @@ const getProductDescription = async (id) => {
         return '';
     }
 };
-
-const getCondition = value => {
-    if (value === 'used') {
-        return 'Usado';
-    }    else if (value === 'new') {
-        return 'Nuevo';
-    }    else {
-        return value;
-    }
-};
-
-const formatterPeso = new Intl.NumberFormat('es-AR', {
-    style: 'currency',
-    currency: 'ARS',
-    minimumFractionDigits: 0,
-    useGrouping: true,
-});
 
 module.exports = service;

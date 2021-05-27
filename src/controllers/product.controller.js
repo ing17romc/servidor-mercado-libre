@@ -1,4 +1,4 @@
-const { searchProduct, productDetail } = require('../services/service.js');
+const { searchProduct, productDetail } = require('../services/mercadolibre.service.js');
 const code500 = 500;
 const description500 = 'Internal Server Occured';
 
