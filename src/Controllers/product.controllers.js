@@ -1,14 +1,14 @@
 const { searchProduct, productDetail } = require('../services/mercadolibre.service.js');
-const code500 = 500;
-const description500 = 'Internal Server Occured';
+const { code500, description500 } = require('../Config');
 
 const productCtrl = {};
 
 productCtrl.getSearch = async (req, res) => {
     const { q } = req.query;
+    const {quantity} = req.headers;
 
     try {
-        const json = await searchProduct(q);
+        const json = await searchProduct(q, quantity);
         res.json(json);
     } catch (e) {
         if (e.response && e.response.status) {

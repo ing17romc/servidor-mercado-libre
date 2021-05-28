@@ -1,19 +1,24 @@
 
 const axios = require('axios');
-const { getCondition, formatterCurrency } = require('../utils/utils.js');
-const filter_category = process.env.FILTER_CATEGORY;
-const api_ml_search = process.env.API_MERCADO_LIBRE_SEARCH;
-const api_ml_product_detail = process.env.API_MERCADO_LIBRE_PRODUCT_DETAIL;
-const path_product_description = process.env.PATH_PRODUCT_DESCRIPTION;
-const name = 'N/A';
-const lastname = 'N/A';
+const getSymbolFromCurrency = require('currency-symbol-map');
+const { getCondition } = require('../utils/index.js');
+const { 
+    name, 
+    lastname, 
+    filter_category, 
+    api_ml_search, 
+    api_ml_product_detail, 
+    path_product_description, 
+    code_language_country 
+} = require('../Config');
+
 
 const service = {};
 
-service.searchProduct = async (q) => {
+service.searchProduct = async (q, quantity) => {
+
     const url = `${api_ml_search}${q}`;
     try {
-        console.log(url);
         const response = await axios.get(url);
         const data = response.data;
 
@@ -24,14 +29,14 @@ service.searchProduct = async (q) => {
         }
 
         const items = [];
-        data.results.forEach(element => items.push(
+        data.results.filter(( element ,index) => index < quantity).forEach(element => items.push(
             {
                 id: element.id,
                 title: element.title,
                 price: {
-                    currency: element.currency_id,
+                    currency: getSymbolFromCurrency(element.currency_id),
                     amount: element.available_quantity,
-                    decimals: formatterCurrency.format(element.price),
+                    decimals: element.price.toLocaleString(code_language_country),
                 },
                 picture: element.thumbnail,
                 condition: getCondition(element.condition),
@@ -86,9 +91,9 @@ service.productDetail = async (id) => {
                 id: data.id,
                 title: data.title,
                 price: {
-                    currency: data.currency_id,
+                    currency: getSymbolFromCurrency(data.currency_id),
                     amount: data.available_quantity,
-                    decimals: formatterCurrency.format(data.price),
+                    decimals: data.price.toLocaleString(code_language_country),
                 },
                 picture: data.pictures[0].url,
                 condition: getCondition(data.condition),
@@ -98,7 +103,6 @@ service.productDetail = async (id) => {
             },
         };
     } catch (e) {
-        console.log(e)
         if (e.response) {
             throw e;
         } else {
