@@ -2,7 +2,12 @@ const { searchProduct, productDetail } = require('../services/mercadolibre.servi
 const { code500, description500 } = require('../Config');
 
 const productCtrl = {};
-
+/**
+ * @decriptionFuntion get search
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} req request
+ * @param {*} res response
+ */
 productCtrl.getSearch = async (req, res) => {
     const { q } = req.query;
     const {quantity} = req.headers;
@@ -18,7 +23,12 @@ productCtrl.getSearch = async (req, res) => {
         }
     }
 };
-
+/**
+ * @decriptionFuntion get product description
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} req request
+ * @param {*} res response
+ */
 productCtrl.getProductDetail = async (req, res) => {
     const { id } = req.params;
     try {

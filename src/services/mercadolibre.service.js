@@ -12,9 +12,14 @@ const {
     code_language_country 
 } = require('../Config');
 
-
 const service = {};
 
+/**
+ * @decriptionFuntion function that performs the search
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} q courage to seek
+ * @param {*} quantity number of results to be displayed
+ */
 service.searchProduct = async (q, quantity) => {
 
     const url = `${api_ml_search}${q}`;
@@ -63,6 +68,11 @@ service.searchProduct = async (q, quantity) => {
     }
 };
 
+/**
+ * @decriptionFuntion function that looks up the description of a product
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} id product identifier
+ */
 service.productDescription = async (id) => {
     const url = `${api_ml_product_detail}${id}${path_product_description}`;
     try {
@@ -76,6 +86,11 @@ service.productDescription = async (id) => {
         }
     }
 };
+/**
+ * @decriptionFuntion function that returns the product description
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} id product identifier
+ */
 service.productDetail = async (id) => {
     const url = `${api_ml_product_detail}${id}`;
     const description = await getProductDescription(id);
@@ -110,7 +125,11 @@ service.productDetail = async (id) => {
         }
     }
 };
-
+/**
+ * @decriptionFuntion function that returns the product description
+ * @author Rafael Orlando Márquez Cedeño
+ * @param {*} id product identifier
+ */
 const getProductDescription = async (id) => {
     try {
         return await service.productDescription(id);
