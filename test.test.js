@@ -1,18 +1,23 @@
 require('./index');
-var chai = require('chai'), chaiHttp = require('chai-http');
+const chai = require('chai'); 
+const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-var app = require('./src/app');
-var expect = chai.expect;
+const app = require('./src/app');
+const expect = chai.expect;
+
+const timeout = 10000;
+const quantity = 2;
+const code200 = 200;
+const code400= 400;
+const code404 = 404;
+
+describe('Testing endpoint App Mercado Libre', function () {
 
 
-describe('Testing endpoint App Mercado Libre', function() {
-
-
-  it('Get product details from an existing identifier',  function(done) { 
-    chai.request(app) .get('/api/items/MLA910960311') .end(function(err, res)
-    { 
-      expect(res).to.have.status(200);
+  it('Get product details from an existing identifier', function (done) {
+    chai.request(app).get('/api/items/MLA910960311').end(function (err, res) {
+      expect(res).to.have.status(code200);
       expect(res).be.json;
       expect(res.body).to.have.property('author');
       expect(res.body.author).to.have.property('name');
@@ -28,22 +33,20 @@ describe('Testing endpoint App Mercado Libre', function() {
       expect(res.body.item).to.have.property('free_shipping');
       expect(res.body.item).to.have.property('sold_quantity');
       expect(res.body.item).to.have.property('description');
-      done(); 
-    }); 
-  }).timeout(10000);
+      done();
+    });
+  }).timeout(timeout);
 
-  it('Get product details from an identifier that does not exist',  function(done) { 
-    chai.request(app) .get('/api/items/12345') .end(function(err, res)
-    { 
-      expect(res).to.have.status(404);
-      done(); 
-    }); 
-  }).timeout(10000);
+  it('Get product details from an identifier that does not exist', function (done) {
+    chai.request(app).get('/api/items/12345').end(function (err, res) {
+      expect(res).to.have.status(code404);
+      done();
+    });
+  }).timeout(timeout);
 
-  it('get results from a successful search ',  function(done) { 
-    chai.request(app) .get('/api/items?q=huawei') .set({quantity: 2}) .end(function(err, res)
-    { 
-      expect(res).to.have.status(200);
+  it('get results from a successful search ', function (done) {
+    chai.request(app).get('/api/items?q=huawei').set({ quantity }).end(function (err, res) {
+      expect(res).to.have.status(code200);
       expect(res).be.json;
       expect(res.body).to.have.property('author');
       expect(res.body.author).to.have.property('name');
@@ -52,16 +55,15 @@ describe('Testing endpoint App Mercado Libre', function() {
       expect(res.body.categories).to.be.a('array');
       expect(res.body).to.have.property('items');
       expect(res.body.items).to.be.a('array');
-      expect(res.body.items.length).to.equal(2);
-      done(); 
-    }); 
-  }).timeout(10000);
+      expect(res.body.items.length).to.equal(quantity);
+      done();
+    });
+  }).timeout(timeout);
 
-  it('get results from an unsuccessful search ',  function(done) { 
-    chai.request(app) .get('/api/items?q=jdlfajslñdajsñdljfañlsdfñjasf') .set({quantity: 2}) .end(function(err, res)
-    { 
-      expect(res).to.have.status(400);
-      done(); 
-    }); 
-  }).timeout(10000);
-})
+  it('get results from an unsuccessful search ', function (done) {
+    chai.request(app).get('/api/items?q=jdlfajslñdajsñdljfañlsdfñjasf').set({ quantity }).end(function (err, res) {
+      expect(res).to.have.status(code400);
+      done();
+    });
+  }).timeout(timeout);
+});
